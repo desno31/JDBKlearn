@@ -14,14 +14,12 @@ public class UserDaoJDBCImpl implements UserDao {
     }
     private Connection connection = getConnection();
     public void createUsersTable() {
-        String sql = "create table users" +
+        String sql = "create table if not exists users" +
                 "(id int not null auto_increment, name varchar(255), " +
                 "lastname varchar(255), age tinyint, primary key (id))";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("table created");
-        } catch (SQLSyntaxErrorException e) {
-            System.out.println("table is already exists");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -29,11 +27,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         try (Statement statement = connection.createStatement()) {
-            String sql = "drop table users";
+            String sql = "drop table if exists users";
             statement.executeUpdate(sql);
             System.out.println("table deleted");
-        } catch (SQLSyntaxErrorException e) {
-            System.out.println("there is no such table");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
